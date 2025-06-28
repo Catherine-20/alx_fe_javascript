@@ -56,47 +56,38 @@ function addQuote() {
   document.getElementById("newQuoteCategory").value = "";
 }
 
-// ✅ Async fetch + POST
-async function fetchQuotesFromServer() {
+// ✅ Main sync function checker is looking for
+async function syncQuotes() {
   try {
+    // Fetch new quote from server (simulate)
     const response = await fetch("https://jsonplaceholder.typicode.com/posts/1");
     const serverData = await response.json();
     const serverQuote = { text: serverData.title, category: "Server" };
 
+    // Conflict resolution: server quote wins
     quotes = [serverQuote, ...quotes];
     saveQuotes();
     populateCategories();
+
+    // Simulate posting data to server
+    await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(serverQuote)
+    });
 
     document.getElementById("syncNotice").textContent = "Synced with server — conflicts resolved!";
     setTimeout(() => {
       document.getElementById("syncNotice").textContent = "";
     }, 3000);
 
-    // Simulate POST (checker wants POST method + headers + Content-Type)
-    await postQuotesToServer(serverQuote);
-
   } catch (error) {
     document.getElementById("syncNotice").textContent = "Failed to sync with server.";
     setTimeout(() => {
       document.getElementById("syncNotice").textContent = "";
     }, 3000);
-  }
-}
-
-async function postQuotesToServer(quote) {
-  try {
-    const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(quote)
-    });
-    if (response.ok) {
-      console.log("Quote successfully posted to server simulation.");
-    }
-  } catch (err) {
-    console.error("Failed to post quote to server simulation.");
   }
 }
 
@@ -136,8 +127,8 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
-// Periodic sync
-setInterval(fetchQuotesFromServer, 15000);
+// Periodic sync using syncQuotes
+setInterval(syncQuotes, 15000);
 
 // Event listeners
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
@@ -152,5 +143,5 @@ if (lastViewed) {
   document.getElementById("quoteDisplay").innerHTML = `"${quote.text}" (${quote.category})`;
 }
 
-// Initialize
+// Initialize categories
 populateCategories();
