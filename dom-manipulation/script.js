@@ -1,11 +1,16 @@
-// Array of quotes
-const quotes = [
+// Load quotes from localStorage or use default
+let quotes = JSON.parse(localStorage.getItem("quotes")) || [
   { text: "The best way to get started is to quit talking and begin doing.", category: "Motivation" },
   { text: "Life is what happens when you're busy making other plans.", category: "Life" },
   { text: "Your time is limited, so don’t waste it living someone else’s life.", category: "Inspiration" }
 ];
 
-// Function to show a random quote
+// Save quotes to localStorage
+function saveQuotes() {
+  localStorage.setItem("quotes", JSON.stringify(quotes));
+}
+
+// Show random quote
 function showRandomQuote() {
   if (quotes.length === 0) {
     document.getElementById("quoteDisplay").innerHTML = "No quotes available. Please add some!";
@@ -16,7 +21,7 @@ function showRandomQuote() {
   document.getElementById("quoteDisplay").innerHTML = `"${quote.text}" (${quote.category})`;
 }
 
-// Function to add a new quote
+// Add a new quote
 function addQuote() {
   const textInput = document.getElementById("newQuoteText");
   const categoryInput = document.getElementById("newQuoteCategory");
@@ -29,7 +34,9 @@ function addQuote() {
     return;
   }
 
-  quotes.push({ text: newText, category: newCategory });
+  const newQuote = { text: newText, category: newCategory };
+  quotes.push(newQuote);
+  saveQuotes();
 
   document.getElementById("quoteDisplay").innerHTML = `"${newText}" (${newCategory})`;
 
@@ -37,7 +44,7 @@ function addQuote() {
   categoryInput.value = "";
 }
 
-// Function to dynamically create the add quote form
+// Create the add quote form dynamically
 function createAddQuoteForm() {
   const formContainer = document.createElement("div");
 
@@ -52,6 +59,7 @@ function createAddQuoteForm() {
   document.getElementById("addQuoteBtn").addEventListener("click", addQuote);
 }
 
-// Setup event listeners and create form
+// Setup
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 createAddQuoteForm();
+
