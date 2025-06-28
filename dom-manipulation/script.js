@@ -1,19 +1,19 @@
-// Array of quotes (text + category)
+// Array of quotes
 const quotes = [
   { text: "The best way to get started is to quit talking and begin doing.", category: "Motivation" },
   { text: "Life is what happens when you're busy making other plans.", category: "Life" },
   { text: "Your time is limited, so don’t waste it living someone else’s life.", category: "Inspiration" }
 ];
 
-// Function to display a random quote
-function displayRandomQuote() {
+// Function to show a random quote
+function showRandomQuote() {
   if (quotes.length === 0) {
-    document.getElementById("quoteDisplay").innerText = "No quotes available. Please add some!";
+    document.getElementById("quoteDisplay").innerHTML = "No quotes available. Please add some!";
     return;
   }
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const quote = quotes[randomIndex];
-  document.getElementById("quoteDisplay").innerText = `"${quote.text}" (${quote.category})`;
+  document.getElementById("quoteDisplay").innerHTML = `"${quote.text}" (${quote.category})`;
 }
 
 // Function to add a new quote
@@ -31,14 +31,15 @@ function addQuote() {
 
   quotes.push({ text: newText, category: newCategory });
 
-  // Update display immediately with new quote
-  document.getElementById("quoteDisplay").innerText = `"${newText}" (${newCategory})`;
+  // Optionally display the added quote
+  document.getElementById("quoteDisplay").innerHTML = `"${newText}" (${newCategory})`;
 
   // Clear inputs
   textInput.value = "";
   categoryInput.value = "";
 }
 
-// Add event listeners
-document.getElementById("newQuote").addEventListener("click", displayRandomQuote);
+// Event listeners
+document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 document.getElementById("addQuoteBtn").addEventListener("click", addQuote);
+
