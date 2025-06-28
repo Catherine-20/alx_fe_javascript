@@ -92,10 +92,9 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
-// ✅ Main sync function expected by ALX checker
+// ✅ ALX expects this function
 async function syncQuotes() {
   try {
-    // Fetch a server quote
     const response = await fetch("https://jsonplaceholder.typicode.com/posts/1");
     const serverData = await response.json();
     const serverQuote = { text: serverData.title, category: "Server" };
@@ -104,7 +103,6 @@ async function syncQuotes() {
     saveQuotes();
     populateCategories();
 
-    // Post to server simulation
     await fetch("https://jsonplaceholder.typicode.com/posts", {
       method: "POST",
       headers: {
@@ -117,7 +115,6 @@ async function syncQuotes() {
     setTimeout(() => {
       document.getElementById("syncNotice").textContent = "";
     }, 3000);
-
   } catch (err) {
     document.getElementById("syncNotice").textContent = "Failed to sync with server.";
     setTimeout(() => {
@@ -126,21 +123,21 @@ async function syncQuotes() {
   }
 }
 
-// Periodic sync
+// periodic sync
 setInterval(syncQuotes, 15000);
 
-// Restore last viewed quote
+// restore last viewed quote
 const lastViewed = sessionStorage.getItem("lastViewedQuote");
 if (lastViewed) {
   const quote = JSON.parse(lastViewed);
   document.getElementById("quoteDisplay").innerHTML = `"${quote.text}" (${quote.category})`;
 }
 
-// Event listeners
+// event listeners
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 document.getElementById("addQuoteBtn").addEventListener("click", addQuote);
 document.getElementById("exportBtn").addEventListener("click", exportToJsonFile);
 document.getElementById("importFile").addEventListener("change", importFromJsonFile);
 
-// Initialize
+// initialize
 populateCategories();
