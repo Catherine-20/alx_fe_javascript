@@ -1,12 +1,12 @@
-// Array of quotes (each quote has text + category)
+// Array of quotes (text + category)
 const quotes = [
   { text: "The best way to get started is to quit talking and begin doing.", category: "Motivation" },
   { text: "Life is what happens when you're busy making other plans.", category: "Life" },
   { text: "Your time is limited, so don’t waste it living someone else’s life.", category: "Inspiration" }
 ];
 
-// Function to show a random quote
-function showRandomQuote() {
+// Function to display a random quote
+function displayRandomQuote() {
   if (quotes.length === 0) {
     document.getElementById("quoteDisplay").innerText = "No quotes available. Please add some!";
     return;
@@ -31,13 +31,14 @@ function addQuote() {
 
   quotes.push({ text: newText, category: newCategory });
 
+  // Update display immediately with new quote
+  document.getElementById("quoteDisplay").innerText = `"${newText}" (${newCategory})`;
+
   // Clear inputs
   textInput.value = "";
   categoryInput.value = "";
-
-  alert("Quote added successfully!");
 }
 
-// Attach event listeners
-document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+// Add event listeners
+document.getElementById("newQuote").addEventListener("click", displayRandomQuote);
 document.getElementById("addQuoteBtn").addEventListener("click", addQuote);
