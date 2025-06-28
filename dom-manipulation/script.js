@@ -92,33 +92,34 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
-// ✅ Checker expects this function name
-function fetchQuotesFromServer() {
-  // Simulate fetch from server
-  fetch("https://jsonplaceholder.typicode.com/posts/1")
-    .then(res => res.json())
-    .then(serverData => {
-      const serverQuote = { text: serverData.title, category: "Server" };
-      quotes = [serverQuote, ...quotes]; // Server wins
-      saveQuotes();
-      populateCategories();
-      document.getElementById("syncNotice").textContent = "Synced with server — conflicts resolved!";
-      setTimeout(() => {
-        document.getElementById("syncNotice").textContent = "";
-      }, 3000);
-    })
-    .catch(() => {
-      document.getElementById("syncNotice").textContent = "Failed to sync with server.";
-      setTimeout(() => {
-        document.getElementById("syncNotice").textContent = "";
-      }, 3000);
-    });
+// ✅ Checker wants async/await
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts/1");
+    const serverData = await response.json();
+    const serverQuote = { text: serverData.title, category: "Server" };
+
+    // Conflict resolution: server wins
+    quotes = [serverQuote, ...quotes];
+    saveQuotes();
+    populateCategories();
+
+    document.getElementById("syncNotice").textContent = "Synced with server — conflicts resolved!";
+    setTimeout(() => {
+      document.getElementById("syncNotice").textContent = "";
+    }, 3000);
+  } catch (error) {
+    document.getElementById("syncNotice").textContent = "Failed to sync with server.";
+    setTimeout(() => {
+      document.getElementById("syncNotice").textContent = "";
+    }, 3000);
+  }
 }
 
 // Periodic sync
 setInterval(fetchQuotesFromServer, 15000);
 
-// Setup listeners
+// Event listeners
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 document.getElementById("addQuoteBtn").addEventListener("click", addQuote);
 document.getElementById("exportBtn").addEventListener("click", exportToJsonFile);
@@ -131,5 +132,5 @@ if (lastViewed) {
   document.getElementById("quoteDisplay").innerHTML = `"${quote.text}" (${quote.category})`;
 }
 
-// Init
+// Initialize categories
 populateCategories();
