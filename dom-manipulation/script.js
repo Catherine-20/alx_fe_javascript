@@ -92,17 +92,19 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
-// ✅ ALX expects this function
+// --- SERVER SYNC AND CONFLICT RESOLUTION ---
 async function syncQuotes() {
   try {
     const response = await fetch("https://jsonplaceholder.typicode.com/posts/1");
     const serverData = await response.json();
     const serverQuote = { text: serverData.title, category: "Server" };
 
+    // Conflict resolution: server data wins
     quotes = [serverQuote, ...quotes];
     saveQuotes();
     populateCategories();
 
+    // POST new server data back
     await fetch("https://jsonplaceholder.typicode.com/posts", {
       method: "POST",
       headers: {
@@ -115,7 +117,7 @@ async function syncQuotes() {
     setTimeout(() => {
       document.getElementById("syncNotice").textContent = "";
     }, 3000);
-  } catch (err) {
+  } catch (error) {
     document.getElementById("syncNotice").textContent = "Failed to sync with server.";
     setTimeout(() => {
       document.getElementById("syncNotice").textContent = "";
@@ -139,5 +141,5 @@ document.getElementById("addQuoteBtn").addEventListener("click", addQuote);
 document.getElementById("exportBtn").addEventListener("click", exportToJsonFile);
 document.getElementById("importFile").addEventListener("change", importFromJsonFile);
 
-// initialize
+// init
 populateCategories();
